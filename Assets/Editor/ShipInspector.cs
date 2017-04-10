@@ -11,12 +11,15 @@ public class ShipInspector : Editor
     public string[] shipTabs = new string[] { "Ship", "Crew" };
     public int shipChoice = 0;
     public int currCrewMember = 0;
-    public int shipStatPool = 70;
     string s;
 
     const int ARM_MIN = 10;
     const int ATK_MIN = 10;
     const int AGI_MIN = 10;
+
+    const int MAX_STAT_POOL = 100;
+
+    int currentStats = MAX_STAT_POOL;
 
     //public string gunChoice;
 
@@ -46,17 +49,16 @@ public class ShipInspector : Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Stat Points Remaining: ");
-            EditorGUILayout.LabelField(shipStatPool.ToString());
+            EditorGUILayout.LabelField(currentStats.ToString());
             EditorGUILayout.EndHorizontal();
 
-            currentShip.armor = EditorGUILayout.IntSlider("Armor", currentShip.armor, ARM_MIN, shipStatPool);
+            currentStats = EditorGUILayout.IntSlider(currentStats, 0, (MAX_STAT_POOL - (currentShip.armor + currentShip.attack + currentShip.agility)));
 
-            currentShip.attack = EditorGUILayout.IntSlider("Attack", currentShip.attack, ATK_MIN, shipStatPool);
+            currentShip.armor = EditorGUILayout.IntSlider("Armor", currentShip.armor, ARM_MIN, currentStats++);
+
+            currentShip.attack = EditorGUILayout.IntSlider("Attack", currentShip.attack, ATK_MIN, currentStats++);
             
-            currentShip.agility = EditorGUILayout.IntSlider("Agility", currentShip.agility, AGI_MIN, shipStatPool);
-
-            if (shipStatPool < 0)
-                shipStatPool = 0;
+            currentShip.agility = EditorGUILayout.IntSlider("Agility", currentShip.agility, AGI_MIN, currentStats++);
 
             currentShip.hitPoints = EditorGUILayout.IntSlider("Hit Points", currentShip.hitPoints, 1, 100);
             ProgressBar(currentShip.hitPoints / 100f, "Hit Points");
